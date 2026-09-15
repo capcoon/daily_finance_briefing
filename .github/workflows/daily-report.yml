@@ -1,0 +1,67 @@
+name: Daily finance report
+
+on:
+  schedule:
+    # GitHub cron은 UTC 기준이다. 01:00 UTC는 10:00 KST다.
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+    inputs:
+      report_date:
+        description: "조회 종료일(선택, YYYY-MM-DD)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-finance-report
+  cancel-in-progress: false
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install .
+
+      - name: Generate report
+        env:
+          REPORT_DATE: ${{ inputs.report_date }}
+          TZ: Asia/Seoul
+        run: |
+          args=(--output-dir reports)
+          if [[ -n "$REPORT_DATE" ]]; then
+            args+=(--date "$REPORT_DATE")
+          fi
+          python -m daily_finance_briefing "${args[@]}"
+
+      - name: Validate report
+        run: test -s reports/latest.html
+
+      - name: Write job summary
+        run: |
+          echo "## Daily finance report" >> "$GITHUB_STEP_SUMMARY"
+          echo "Generated reports/latest.html at $(date -u +'%Y-%m-%d %H:%M UTC')." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          if git diff --cached --quiet; then
+            echo "No report changes"
+            exit 0
+          fi
+          git commit -m "chore: add daily finance report"
+          git push
