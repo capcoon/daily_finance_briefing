@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ report.report_date }} 금융시장 브리핑</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#64748b; --line:#dbe3ee; --panel:#fff; --bg:#f5f7fb; --up:#c62828; --down:#1565c0; }
+    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif; }
+    main { width:min(1120px,calc(100% - 32px)); margin:40px auto; } header { margin-bottom:28px; }
+    h1 { margin:0 0 8px; font-size:clamp(1.7rem,4vw,2.5rem); } .meta { color:var(--muted); }
+    section { margin:22px 0; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 8px 24px rgba(15,23,42,.05); }
+    h2 { margin:0; padding:18px 20px; border-bottom:1px solid var(--line); font-size:1.15rem; }
+    .table-wrap { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+    th,td { padding:13px 16px; text-align:right; border-bottom:1px solid var(--line); white-space:nowrap; }
+    th:first-child,td:first-child { text-align:left; } th { color:var(--muted); font-size:.82rem; }
+    tr:last-child td { border-bottom:0; } .symbol,.date { color:var(--muted); font-size:.85rem; }
+    .up { color:var(--up); } .down { color:var(--down); } .error,.stale { color:#9a6700; font-weight:600; }
+    footer { color:var(--muted); margin-top:24px; font-size:.85rem; }
+    @media (max-width:640px) { main { width:min(100% - 20px,1120px); margin:20px auto; } th,td { padding:11px 12px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>금융시장 데일리 브리핑</h1>
+    <div class="meta">대표 기준일 {{ report.report_date }} · 자산별 실제 기준일은 아래 표에서 확인하세요.</div>
+  </header>
+  {% for category, snapshots in groups.items() %}
+  <section>
+    <h2>{{ category }}</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>자산</th><th>기준일</th><th>시가</th><th>종가</th><th>변동</th><th>등락률</th><th>상태</th></tr></thead>
+      <tbody>
+      {% for item in snapshots %}
+        <tr>
+          <td><strong>{{ item.asset.name }}</strong><br><span class="symbol">{{ item.asset.symbol }} · {{ item.asset.currency }}</span></td>
+          <td class="date">{{ item.as_of_date or '—' }}</td>
+          <td>{{ item.open|number }}</td><td>{{ item.close|number }}</td>
+          <td class="{% if item.change and item.change > 0 %}up{% elif item.change and item.change < 0 %}down{% endif %}">{{ item.change|number }}</td>
+          <td class="{% if item.change_percent and item.change_percent > 0 %}up{% elif item.change_percent and item.change_percent < 0 %}down{% endif %}">{% if item.change_percent is not none %}{{ '%+.2f'|format(item.change_percent) }}%{% else %}—{% endif %}</td>
+          <td class="{{ item.status }}">{% if item.status == 'ok' %}정상{% elif item.status == 'stale' %}지연{% else %}오류{% endif %}{% if item.message %}<br><span class="date">{{ item.message }}</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+  {% endfor %}
+  <footer>FinanceDataReader를 통해 수집한 참고용 정보입니다. 투자 판단의 근거로 단독 사용하지 마세요.</footer>
+</main>
+</body>
+</html>
