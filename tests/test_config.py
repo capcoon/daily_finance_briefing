@@ -28,3 +28,12 @@ def test_duplicate_symbols_are_rejected(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="중복"):
         load_assets(config)
+
+
+def test_default_assets_include_japanese_stock_market() -> None:
+    assets = load_assets(Path("config/assets.yaml"))
+
+    nikkei = next(asset for asset in assets if asset.symbol == "N225")
+    assert nikkei.name == "닛케이 225"
+    assert nikkei.category == "해외 주가지수"
+    assert nikkei.currency == "JPY"

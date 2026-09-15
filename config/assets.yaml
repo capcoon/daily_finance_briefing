@@ -19,6 +19,10 @@ assets:
     name: S&P 500
     category: 해외 주가지수
     currency: USD
+  - symbol: N225
+    name: 닛케이 225
+    category: 해외 주가지수
+    currency: JPY
   - symbol: USD/KRW
     name: 미국 달러/대한민국 원
     category: 주요 외환
