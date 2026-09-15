@@ -1,0 +1,45 @@
+assets:
+  - symbol: KS11
+    name: KOSPI
+    category: 국내 주가지수
+    currency: KRW
+  - symbol: KQ11
+    name: KOSDAQ
+    category: 국내 주가지수
+    currency: KRW
+  - symbol: DJI
+    name: 다우존스 산업평균
+    category: 해외 주가지수
+    currency: USD
+  - symbol: IXIC
+    name: NASDAQ 종합
+    category: 해외 주가지수
+    currency: USD
+  - symbol: US500
+    name: S&P 500
+    category: 해외 주가지수
+    currency: USD
+  - symbol: USD/KRW
+    name: 미국 달러/대한민국 원
+    category: 주요 외환
+    currency: KRW
+  - symbol: EUR/USD
+    name: 유로/미국 달러
+    category: 주요 외환
+    currency: USD
+  - symbol: USD/JPY
+    name: 미국 달러/일본 엔
+    category: 주요 외환
+    currency: JPY
+  - symbol: GC=F
+    name: 금 선물
+    category: 주요 원자재
+    currency: USD
+  - symbol: CL=F
+    name: WTI 원유 선물
+    category: 주요 원자재
+    currency: USD
+  - symbol: HG=F
+    name: 구리 선물
+    category: 주요 원자재
+    currency: USD
