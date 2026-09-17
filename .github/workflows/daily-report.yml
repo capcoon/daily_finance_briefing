@@ -3,7 +3,7 @@ name: Daily finance report
 on:
   schedule:
     # GitHub cron은 UTC 기준이다. 01:00 UTC는 10:00 KST다.
-    - cron: "15 2 * * *"
+    - cron: "16 2 * * *"
   workflow_dispatch:
     inputs:
       report_date:
