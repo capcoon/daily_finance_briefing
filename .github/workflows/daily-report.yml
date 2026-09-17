@@ -1,7 +1,6 @@
 name: Daily finance report
 
 on:
-  push:
   schedule:
     # GitHub cron은 UTC 기준이다. 01:00 UTC는 10:00 KST다.
     - cron: "16 2 * * *"
