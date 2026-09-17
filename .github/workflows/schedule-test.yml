@@ -1,0 +1,14 @@
+name: Schedule test
+
+on:
+  schedule:
+  - cron: "10 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scheduled trigger test
+      run: echo "Scheduled workflow is working"
+      
